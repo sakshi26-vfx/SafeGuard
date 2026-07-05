@@ -1,0 +1,14 @@
+﻿
+running 9 tests
+test test::test_initialize_sets_all_state ... ok
+test test::test_deposit_moves_tokens_to_contract ... ok
+test test::test_expired_claim_transfers_full_balance_to_beneficiary ... ok
+test test::test_double_initialize_panics - should panic ... ok
+test test::test_heartbeat_resets_countdown ... ok
+test test::test_heartbeat_reset_prevents_claim_within_new_window ... ok
+test test::test_premature_claim_panics - should panic ... ok
+test test::test_double_claim_panics - should panic ... ok
+test test::test_post_claim_deposit_panics - should panic ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.64s
+
