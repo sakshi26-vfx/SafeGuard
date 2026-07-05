@@ -109,10 +109,27 @@ SafeGuard is built to fully satisfy the requirements for **Level 4 of the Stella
 ---
 
 ## Deliverables & Media
-- **GitHub Repository:** [Stellar Builders — SafeGuard](https://github.com/stellar-builders/safeguard)
+- **GitHub Repository:** [sakshi26-vfx — SafeGuard](https://github.com/sakshi26-vfx/SafeGuard)
 - **Live Demo Link:** `http://localhost:3000` (Local Dev Environment Setup)
 - **Demo Video Link:** [SafeGuard Demonstration Video](https://www.youtube.com/watch?v=dQw4w9WgXcQ) *(Replace with actual video link prior to submission)*
-- **Product UI Screenshots:** Available in the `/docs/screenshots/` directory showcasing:
-  - Mobile responsive design dashboard
-  - WebAuthn biometric setup prompt
-  - In-app diagnostics & validation console
+
+### Product UI Screenshots
+
+#### 1. Glassmorphic Landing Hero Page
+![SafeGuard Landing Page](docs/screenshots/landing_page.png)
+
+#### 2. Interactive Onboarding & FAQ Flow
+![SafeGuard Onboarding Page](docs/screenshots/onboarding_page.png)
+
+#### 3. Vault Management Dashboard (Desktop View)
+![SafeGuard Dashboard Desktop](docs/screenshots/dashboard_page.png)
+
+#### 4. Mobile Responsive Vault Layout
+![SafeGuard Dashboard Mobile](docs/screenshots/dashboard_mobile.png)
+
+#### 5. In-App Automated Diagnostics Console
+![SafeGuard Diagnostics Page](docs/screenshots/diagnostics_page.png)
+
+#### 6. On-Chain Smart Contract Deployment Verification (Stellar Testnet Explorer)
+![Stellar Explorer Deployment Proof](docs/screenshots/stellar_explorer_proof.png)
+

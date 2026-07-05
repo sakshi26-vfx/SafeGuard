@@ -90,7 +90,7 @@ export default function HomePage() {
           </Link>
 
           <a
-            href="https://github.com/stellar-builders/safeguard"
+            href="https://github.com/sakshi26-vfx/SafeGuard"
             target="_blank"
             rel="noopener noreferrer"
             id="view-code-btn"
