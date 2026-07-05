@@ -1,0 +1,22 @@
+# Rust / Cargo
+/target/
+/cargo_target/
+**/*.rs.bk
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+build/
+.env*.local
+
+# System / Editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.suo
+*.user
+/npm-debug.log*
+/yarn-debug.log*
+/yarn-error.log*
