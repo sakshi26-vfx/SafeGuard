@@ -69,7 +69,7 @@ The frontend is a Next.js application built with Tailwind CSS, TypeScript, and t
 **Configure Environment Variables:**
 Create `frontend/.env.local` with the following variables:
 ```env
-NEXT_PUBLIC_CONTRACT_ID=CBFP7YDXO27RWNFPXD2NYKLKS777NSTTSGWA5LZERDK33KEDJPP7PKRL
+NEXT_PUBLIC_CONTRACT_ID=CDN4V3XXAK6I4ZZ54OH2YILMKL6E377OQCQX6WHZRSYEG2FMOJQBZSSI
 NEXT_PUBLIC_STELLAR_NETWORK=testnet
 NEXT_PUBLIC_STELLAR_RPC=https://soroban-testnet.stellar.org:443
 NEXT_PUBLIC_BENEFICIARY=GDD6AIIFDFH2AOQUR626PUIZY4UJDRZRCF7G6HYXWFSXKBLPTVWOSRB6
@@ -89,9 +89,9 @@ powershell -ExecutionPolicy Bypass -File .\scripts\dev-setup.ps1
 SafeGuard is built to fully satisfy the requirements for **Level 4 of the Stellar Builder Challenge**:
 
 ### 1. Smart Contract Deployment
-- **Contract ID:** `CBFP7YDXO27RWNFPXD2NYKLKS777NSTTSGWA5LZERDK33KEDJPP7PKRL`
+- **Contract ID:** `CDN4V3XXAK6I4ZZ54OH2YILMKL6E377OQCQX6WHZRSYEG2FMOJQBZSSI`
 - **Network:** Stellar Testnet
-- **Explorer Link:** [Stellar Expert Contract Explorer](https://stellar.expert/explorer/testnet/contract/CBFP7YDXO27RWNFPXD2NYKLKS777NSTTSGWA5LZERDK33KEDJPP7PKRL)
+- **Explorer Link:** [Stellar Expert Contract Explorer](https://stellar.expert/explorer/testnet/contract/CDN4V3XXAK6I4ZZ54OH2YILMKL6E377OQCQX6WHZRSYEG2FMOJQBZSSI)
 
 ### 2. Proof of 10+ Real User Wallet Interactions
 - We conducted live testnet tests with **12 unique wallet addresses** verifying all smart contract operations (`initialize`, `heartbeat`, `deposit`, `claim_assets`).

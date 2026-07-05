@@ -8,10 +8,10 @@ This document records verified on-chain interactions with the SafeGuard smart co
 
 | Field | Value |
 |---|---|
-| **Contract ID** | `CBFP7YDXO27RWNFPXD2NYKLKS777NSTTSGWA5LZERDK33KEDJPP7PKRL` |
+| **Contract ID** | `CDN4V3XXAK6I4ZZ54OH2YILMKL6E377OQCQX6WHZRSYEG2FMOJQBZSSI` |
 | **Network** | Stellar Testnet |
 | **Deployed By** | `GBAHQXEZB52PIC6OYCYFQDJJT2L6IACSV4OHSMH7CCGEDKDTQ5VRT2LX` |
-| **Explorer** | [View on Stellar Expert](https://stellar.expert/explorer/testnet/contract/CBFP7YDXO27RWNFPXD2NYKLKS777NSTTSGWA5LZERDK33KEDJPP7PKRL) |
+| **Explorer** | [View on Stellar Expert](https://stellar.expert/explorer/testnet/contract/CDN4V3XXAK6I4ZZ54OH2YILMKL6E377OQCQX6WHZRSYEG2FMOJQBZSSI) |
 
 ---
 
@@ -21,6 +21,7 @@ This document records verified on-chain interactions with the SafeGuard smart co
 |---|---|---|
 | Contract Deploy #1 | `contract deploy` — initial testnet deployment | [View TX](https://stellar.expert/explorer/testnet/tx/1c695743859261055dba216bcff93882a85a3cdebd75ed081a1d8d2292a96de0) |
 | Contract Deploy #2 | `contract deploy` — redeployed fresh for 60s test window | [View TX](https://stellar.expert/explorer/testnet/tx/790ae7d37b15942079f7698b676666870a176d3e40afe3bc55e42dbe51bb7b66) |
+| Contract Deploy #3 | `contract deploy` — final start-over fresh contract | [View TX](https://stellar.expert/explorer/testnet/tx/a74799627daaf8b2eb4fbdf1042fade14ce18b7d74ae9d2bdd6061dfc0e874b6) |
 
 ---
 
