@@ -8,10 +8,10 @@ This document records verified on-chain interactions with the SafeGuard smart co
 
 | Field | Value |
 |---|---|
-| **Contract ID** | `CDN4V3XXAK6I4ZZ54OH2YILMKL6E377OQCQX6WHZRSYEG2FMOJQBZSSI` |
+| **Contract ID** | `CCKPFO5MBCJO5EKQQFMLUGXQ4ZG5LJLBX3IYXVZ6LNMSZWMOQRWNHISH` |
 | **Network** | Stellar Testnet |
 | **Deployed By** | `GBAHQXEZB52PIC6OYCYFQDJJT2L6IACSV4OHSMH7CCGEDKDTQ5VRT2LX` |
-| **Explorer** | [View on Stellar Expert](https://stellar.expert/explorer/testnet/contract/CDN4V3XXAK6I4ZZ54OH2YILMKL6E377OQCQX6WHZRSYEG2FMOJQBZSSI) |
+| **Explorer** | [View on Stellar Expert](https://stellar.expert/explorer/testnet/contract/CCKPFO5MBCJO5EKQQFMLUGXQ4ZG5LJLBX3IYXVZ6LNMSZWMOQRWNHISH) |
 
 ---
 
