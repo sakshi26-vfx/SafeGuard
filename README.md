@@ -114,7 +114,10 @@ SafeGuard is built to fully satisfy the requirements for **Level 4 of the Stella
 - **Demo Video Walkthrough:** [Download Demo Video](https://files.catbox.moe/dgbwdi.mp4)
 
 ### Demo Video Walkthrough
-<video src="https://files.catbox.moe/dgbwdi.mp4" controls width="100%"></video>
+
+[![Watch SafeGuard Demo Video](docs/screenshots/landing_page.png)](https://files.catbox.moe/dgbwdi.mp4)
+
+*Click the landing page screenshot above to play the full demo video walkthrough.*
 
 ### Product UI Screenshots
 
