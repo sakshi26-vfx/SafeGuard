@@ -111,10 +111,10 @@ SafeGuard is built to fully satisfy the requirements for **Level 4 of the Stella
 ## Deliverables & Media
 - **GitHub Repository:** [sakshi26-vfx — SafeGuard](https://github.com/sakshi26-vfx/SafeGuard)
 - **Live Demo Link:** [SafeGuard Live Web App](https://frontend-beige-psi-64.vercel.app)
-- **Demo Video Walkthrough:** [Download Demo Video](docs/video/safeguard_demo.mp4)
+- **Demo Video Walkthrough:** [Download Demo Video](https://files.catbox.moe/dgbwdi.mp4)
 
 ### Demo Video Walkthrough
-<video src="https://github.com/sakshi26-vfx/SafeGuard/blob/main/docs/video/safeguard_demo.mp4?raw=true" controls width="100%"></video>
+<video src="https://files.catbox.moe/dgbwdi.mp4" controls width="100%"></video>
 
 ### Product UI Screenshots
 
