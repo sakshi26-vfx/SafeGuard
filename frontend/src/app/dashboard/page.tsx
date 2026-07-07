@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { registerPasskey, getHeartbeatAssertion, bytesToHex } from '@/utils/webauthn';
-import { getLastHeartbeat, getHeartbeatWindow, isClaimed, submitHeartbeat, submitInitialize, submitUpdatePasskey, submitClaim } from '@/utils/stellar';
+import { getLastHeartbeat, getHeartbeatWindow, isClaimed, getOwner, submitHeartbeat, submitInitialize, submitUpdatePasskey, submitClaim } from '@/utils/stellar';
 import { useWallet } from '@/hooks/useWallet';
 import {
   trackHeartbeatTriggered,
@@ -14,6 +14,7 @@ import * as Sentry from '@sentry/nextjs';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 interface VaultState {
+  owner: string | null;
   lastHeartbeat: bigint;
   heartbeatWindow: bigint;
   isClaimed: boolean;
@@ -124,6 +125,7 @@ export default function DashboardPage() {
   useEffect(() => { trackPageView('dashboard'); }, []);
 
   const [vault, setVault] = useState<VaultState>({
+    owner: null,
     lastHeartbeat: 0n,
     heartbeatWindow: 86400n,
     isClaimed: false,
@@ -136,24 +138,31 @@ export default function DashboardPage() {
   const [nowSeconds, setNowSeconds] = useState(Math.floor(Date.now() / 1000));
   // Persist credential ID across sessions so we reuse the same passkey
   // that was registered against the on-chain public key.
-  const [credentialIdHex, setCredentialIdHex] = useState<string | null>(() => {
-    if (typeof window === 'undefined') return null;
-    return localStorage.getItem('sg_credential_id');
-  });
+  const [credentialIdHex, setCredentialIdHex] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (ownerPublicKey) {
+      setCredentialIdHex(localStorage.getItem(`sg_credential_id_${ownerPublicKey}`));
+    } else {
+      setCredentialIdHex(null);
+    }
+  }, [ownerPublicKey]);
 
   // Load vault state from chain
   const loadVaultState = useCallback(async () => {
     if (!contractId) return;
     try {
-      const [lastHb, window, claimed] = await Promise.all([
+      const [lastHb, window, claimed, ownerAddr] = await Promise.all([
         getLastHeartbeat(contractId),
         getHeartbeatWindow(contractId),
         isClaimed(contractId),
+        getOwner(contractId).catch(() => null),
       ]);
-      setVault({ lastHeartbeat: lastHb, heartbeatWindow: window, isClaimed: claimed, loading: false, error: null });
+      setVault({ owner: ownerAddr, lastHeartbeat: lastHb, heartbeatWindow: window, isClaimed: claimed, loading: false, error: null });
     } catch (err: any) {
       const msg = err?.message || 'Failed to load vault state';
-      setVault((v) => ({ ...v, loading: false, error: msg }));
+      setVault((v) => ({ ...v, owner: null, lastHeartbeat: 0n, heartbeatWindow: 86400n, isClaimed: false, loading: false, error: msg }));
       Sentry.captureException(err);
       trackSessionError({ stage: 'rpc_connection', errorMessage: msg, contractId });
     }
@@ -195,8 +204,8 @@ export default function DashboardPage() {
     setVault((v) => ({ ...v, error: null }));
 
     // Snapshot old values so we can rollback if the on-chain call fails
-    const prevCredentialId = localStorage.getItem('sg_credential_id');
-    const prevPasskeyPubkey = localStorage.getItem('sg_passkey_pubkey');
+    const prevCredentialId = localStorage.getItem(`sg_credential_id_${ownerPublicKey}`);
+    const prevPasskeyPubkey = localStorage.getItem(`sg_passkey_pubkey_${ownerPublicKey}`);
 
     try {
       const challengeBytes = crypto.getRandomValues(new Uint8Array(32));
@@ -234,8 +243,8 @@ export default function DashboardPage() {
 
       // ✅ On-chain call succeeded — now safe to commit to localStorage
       setCredentialIdHex(reg.credentialIdHex);
-      localStorage.setItem('sg_credential_id', reg.credentialIdHex);
-      localStorage.setItem('sg_passkey_pubkey', reg.publicKeyHex);
+      localStorage.setItem(`sg_credential_id_${ownerPublicKey}`, reg.credentialIdHex);
+      localStorage.setItem(`sg_passkey_pubkey_${ownerPublicKey}`, reg.publicKeyHex);
 
       setIsInitialized(true);
       await loadVaultState();
@@ -243,16 +252,16 @@ export default function DashboardPage() {
       // 🔄 Rollback localStorage to the previous values so the stored credential
       // still matches what's on-chain (prevents secp256r1 verification failures).
       if (prevCredentialId) {
-        localStorage.setItem('sg_credential_id', prevCredentialId);
+        localStorage.setItem(`sg_credential_id_${ownerPublicKey}`, prevCredentialId);
         setCredentialIdHex(prevCredentialId);
       } else {
-        localStorage.removeItem('sg_credential_id');
+        localStorage.removeItem(`sg_credential_id_${ownerPublicKey}`);
         setCredentialIdHex(null);
       }
       if (prevPasskeyPubkey) {
-        localStorage.setItem('sg_passkey_pubkey', prevPasskeyPubkey);
+        localStorage.setItem(`sg_passkey_pubkey_${ownerPublicKey}`, prevPasskeyPubkey);
       } else {
-        localStorage.removeItem('sg_passkey_pubkey');
+        localStorage.removeItem(`sg_passkey_pubkey_${ownerPublicKey}`);
       }
 
       const msg = err?.message || 'Setup failed';
@@ -425,6 +434,23 @@ export default function DashboardPage() {
                   </button>
                 )}
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* Wallet Ownership Warning */}
+        {ownerPublicKey && vault.owner && vault.owner !== ownerPublicKey && (
+          <div className="mb-6 flex items-start gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-300">
+            <span className="text-lg">⚠️</span>
+            <div>
+              <p className="font-semibold">Connected Wallet is Not the Vault Owner</p>
+              <p className="text-amber-300/70">
+                You are connected as <code className="text-white">{ownerPublicKey.slice(0, 6)}…{ownerPublicKey.slice(-6)}</code>, 
+                but this vault belongs to <code className="text-white">{vault.owner.slice(0, 6)}…{vault.owner.slice(-6)}</code>.
+              </p>
+              <p className="mt-2">
+                To configure your own legacy, please click <strong>"Change Vault Contract"</strong> above and link your own custom contract ID, or switch your wallet back to the owner account.
+              </p>
             </div>
           </div>
         )}
