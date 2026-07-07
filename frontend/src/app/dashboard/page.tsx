@@ -106,9 +106,19 @@ function StatCard({
 // ─── Dashboard Page ───────────────────────────────────────────────────────────
 
 export default function DashboardPage() {
-  const contractId = process.env.NEXT_PUBLIC_CONTRACT_ID || '';
   const { wallet, connect, disconnect, signTransaction } = useWallet();
   const ownerPublicKey = wallet.status === 'connected' ? wallet.publicKey : '';
+  const [contractId, setContractId] = useState<string>('');
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (ownerPublicKey) {
+      const saved = localStorage.getItem(`sg_contract_id_${ownerPublicKey}`);
+      setContractId(saved || process.env.NEXT_PUBLIC_CONTRACT_ID || '');
+    } else {
+      setContractId(process.env.NEXT_PUBLIC_CONTRACT_ID || '');
+    }
+  }, [ownerPublicKey]);
 
   // Track page view
   useEffect(() => { trackPageView('dashboard'); }, []);
@@ -375,6 +385,49 @@ export default function DashboardPage() {
             Your digital estate, secured by biometrics and the Stellar blockchain.
           </p>
         </header>
+
+        {/* Custom Contract ID Settings */}
+        {wallet.status === 'connected' && (
+          <div className="mb-6 rounded-2xl border border-white/5 bg-white/[0.02] p-4 text-xs">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <p className="font-semibold text-white/60">Active Vault Contract ID</p>
+                <code className="text-white/40 break-all">{contractId}</code>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => {
+                    const newId = prompt('Enter custom Soroban Contract ID for your vault:', contractId);
+                    if (newId !== null) {
+                      const cleaned = newId.trim();
+                      if (cleaned) {
+                        localStorage.setItem(`sg_contract_id_${ownerPublicKey}`, cleaned);
+                        setContractId(cleaned);
+                      } else {
+                        localStorage.removeItem(`sg_contract_id_${ownerPublicKey}`);
+                        setContractId(process.env.NEXT_PUBLIC_CONTRACT_ID || '');
+                      }
+                    }
+                  }}
+                  className="rounded-lg bg-white/5 border border-white/10 px-3 py-1.5 font-medium hover:bg-white/10 hover:text-white transition-colors"
+                >
+                  ⚙️ Change Vault Contract
+                </button>
+                {localStorage.getItem(`sg_contract_id_${ownerPublicKey}`) && (
+                  <button
+                    onClick={() => {
+                      localStorage.removeItem(`sg_contract_id_${ownerPublicKey}`);
+                      setContractId(process.env.NEXT_PUBLIC_CONTRACT_ID || '');
+                    }}
+                    className="rounded-lg bg-red-500/10 border border-red-500/20 px-3 py-1.5 font-medium text-red-300 hover:bg-red-500/20 transition-colors"
+                  >
+                    Reset
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Error Banner */}
         {vault.error && (
