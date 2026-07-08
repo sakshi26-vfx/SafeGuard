@@ -98,8 +98,8 @@ SafeGuard is built to fully satisfy the requirements for **Level 4 of the Stella
 - Detailed tx hashes and logs: [docs/wallet_interactions.md](file:///d:/SafeGuard.stellar/docs/wallet_interactions.md)
 
 ### 3. User Feedback & Analytics Validation
-- Real-world feedback was collected from 10 users across multiple operating systems (iOS, Android, Windows, macOS).
-- **Averaged Scores:** Passkey Setup Speed: **4.7/5**, Layout: **4.7/5**, Security Trust: **4.6/5**.
+- **Feedback Survey:** [Share your experience via our Google Form](https://forms.gle/xwb3Nw5mHU9FJH8w7)
+- **Status:** Currently gathering user feedback (1 response received, 9 more pending).
 - Detailed user logs and analysis: [docs/feedback_template.md](file:///d:/SafeGuard.stellar/docs/feedback_template.md)
 - Analytics are actively tracked via **PostHog** and error logs via **Sentry** (configured in frontend source code).
 
