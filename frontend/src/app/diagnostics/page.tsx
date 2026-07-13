@@ -51,6 +51,8 @@ export default function DiagnosticsPage() {
     setSteps((prev) => prev.map((s) => (s.id === id ? { ...s, ...patch } : s)));
   }
 
+  const tick = (ms = 400) => new Promise((r) => setTimeout(r, ms));
+
   // ── Run diagnostics on mount ──────────────────────────────────────────────
   useEffect(() => {
     (async () => {
@@ -101,8 +103,9 @@ export default function DiagnosticsPage() {
         const json = await res.json();
         const network = json?.result?.network ?? json?.result?.passphrase ?? 'unknown';
         setStep('rpc', { status: 'ok', detail: `Connected. Network: ${network}` });
-      } catch (e: any) {
-        setStep('rpc', { status: 'error', detail: `Cannot reach Stellar RPC at ${RPC_URL}: ${e.message}` });
+      } catch (e: unknown) {
+        const errMsg = e instanceof Error ? e.message : String(e);
+        setStep('rpc', { status: 'error', detail: `Cannot reach Stellar RPC at ${RPC_URL}: ${errMsg}` });
       }
 
       // 4. Contract existence check (simple simulation)
@@ -128,8 +131,9 @@ export default function DiagnosticsPage() {
             status: 'ok',
             detail: `Contract ID ${CONTRACT_ID.slice(0, 8)}… appears reachable on ${process.env.NEXT_PUBLIC_STELLAR_NETWORK ?? 'testnet'}.`,
           });
-        } catch (e: any) {
-          setStep('contract', { status: 'warn', detail: `Could not verify contract: ${e.message}` });
+        } catch (e: unknown) {
+          const errMsg = e instanceof Error ? e.message : String(e);
+          setStep('contract', { status: 'warn', detail: `Could not verify contract: ${errMsg}` });
         }
       }
 
@@ -157,12 +161,7 @@ export default function DiagnosticsPage() {
 
       setDone(true);
     })();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  function tick(ms = 400) {
-    return new Promise((r) => setTimeout(r, ms));
-  }
 
   function handleClearPasskey() {
     localStorage.removeItem('sg_credential_id');

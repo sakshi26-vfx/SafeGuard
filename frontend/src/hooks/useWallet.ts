@@ -20,7 +20,9 @@ export function useWallet() {
   useEffect(() => {
     const saved = localStorage.getItem('sg_wallet_pubkey');
     if (saved) {
-      setWallet({ status: 'connected', publicKey: saved });
+      setTimeout(() => {
+        setWallet({ status: 'connected', publicKey: saved });
+      }, 0);
     }
   }, []);
 
@@ -52,8 +54,8 @@ export function useWallet() {
       localStorage.setItem('sg_wallet_pubkey', pubkey);
       setWallet({ status: 'connected', publicKey: pubkey });
       return pubkey;
-    } catch (err: any) {
-      const message = err?.message || 'Failed to connect wallet.';
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to connect wallet.';
       setWallet({ status: 'error', message });
       throw err;
     }

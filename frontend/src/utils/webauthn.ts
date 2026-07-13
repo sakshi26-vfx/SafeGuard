@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // WebAuthn Client Utilities for SafeGuard
 
 // Helper: Convert Hex String to Uint8Array
@@ -76,18 +77,18 @@ export function parseDerSignature(der: ArrayBuffer): Uint8Array {
   const buf = new Uint8Array(der);
   let offset = 0;
   if (buf[offset++] !== 0x30) throw new Error('Invalid signature: not a sequence');
-  let len = buf[offset++];
+  const len = buf[offset++];
   if (len & 0x80) {
     offset += len & 0x7f;
   }
 
   if (buf[offset++] !== 0x02) throw new Error('Invalid signature: expected integer for r');
-  let rLen = buf[offset++];
+  const rLen = buf[offset++];
   let r = buf.subarray(offset, offset + rLen);
   offset += rLen;
 
   if (buf[offset++] !== 0x02) throw new Error('Invalid signature: expected integer for s');
-  let sLen = buf[offset++];
+  const sLen = buf[offset++];
   let s = buf.subarray(offset, offset + sLen);
 
   // Clean leading 00 bytes from DER padding

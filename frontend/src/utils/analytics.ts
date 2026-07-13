@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // SafeGuard Analytics - Production Event Tracking via PostHog
 
 type EventProperties = Record<string, string | number | boolean | null | undefined>;

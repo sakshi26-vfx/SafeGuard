@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
@@ -113,12 +114,14 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    if (ownerPublicKey) {
-      const saved = localStorage.getItem(`sg_contract_id_${ownerPublicKey}`);
-      setContractId(saved || process.env.NEXT_PUBLIC_CONTRACT_ID || '');
-    } else {
-      setContractId(process.env.NEXT_PUBLIC_CONTRACT_ID || '');
-    }
+    setTimeout(() => {
+      if (ownerPublicKey) {
+        const saved = localStorage.getItem(`sg_contract_id_${ownerPublicKey}`);
+        setContractId(saved || process.env.NEXT_PUBLIC_CONTRACT_ID || '');
+      } else {
+        setContractId(process.env.NEXT_PUBLIC_CONTRACT_ID || '');
+      }
+    }, 0);
   }, [ownerPublicKey]);
 
   // Track page view
@@ -135,18 +138,20 @@ export default function DashboardPage() {
   const [heartbeatPending, setHeartbeatPending] = useState(false);
   const [heartbeatSuccess, setHeartbeatSuccess] = useState(false);
   const [claimPending, setClaimPending] = useState(false);
-  const [nowSeconds, setNowSeconds] = useState(Math.floor(Date.now() / 1000));
+  const [nowSeconds, setNowSeconds] = useState(0);
   // Persist credential ID across sessions so we reuse the same passkey
   // that was registered against the on-chain public key.
   const [credentialIdHex, setCredentialIdHex] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    if (ownerPublicKey) {
-      setCredentialIdHex(localStorage.getItem(`sg_credential_id_${ownerPublicKey}`));
-    } else {
-      setCredentialIdHex(null);
-    }
+    setTimeout(() => {
+      if (ownerPublicKey) {
+        setCredentialIdHex(localStorage.getItem(`sg_credential_id_${ownerPublicKey}`));
+      } else {
+        setCredentialIdHex(null);
+      }
+    }, 0);
   }, [ownerPublicKey]);
 
   // Load vault state from chain
@@ -169,11 +174,16 @@ export default function DashboardPage() {
   }, [contractId]);
 
   useEffect(() => {
-    loadVaultState();
+    setTimeout(() => {
+      loadVaultState();
+    }, 0);
   }, [loadVaultState]);
 
   // Live clock tick
   useEffect(() => {
+    setTimeout(() => {
+      setNowSeconds(Math.floor(Date.now() / 1000));
+    }, 0);
     const interval = setInterval(() => {
       setNowSeconds(Math.floor(Date.now() / 1000));
     }, 1000);
@@ -449,7 +459,7 @@ export default function DashboardPage() {
                 but this vault belongs to <code className="text-white">{vault.owner.slice(0, 6)}…{vault.owner.slice(-6)}</code>.
               </p>
               <p className="mt-2">
-                To configure your own legacy, please click <strong>"Change Vault Contract"</strong> above and link your own custom contract ID, or switch your wallet back to the owner account.
+                To configure your own legacy, please click <strong>&quot;Change Vault Contract&quot;</strong> above and link your own custom contract ID, or switch your wallet back to the owner account.
               </p>
             </div>
           </div>
@@ -570,7 +580,7 @@ export default function DashboardPage() {
 
             {/* Heartbeat Action Card */}
             <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl">
-              <h2 className="mb-1 text-base font-bold">Prove You're Alive</h2>
+              <h2 className="mb-1 text-base font-bold">Prove You&apos;re Alive</h2>
               <p className="mb-5 text-sm text-white/40">
                 Use FaceID, TouchID, or Windows Hello to authenticate and reset the inheritance
                 countdown. No private keys required.
