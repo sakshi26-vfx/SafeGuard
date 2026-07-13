@@ -155,6 +155,4 @@ SafeGuard is built to fully satisfy the requirements for **Level 4 of the Stella
 #### 6. On-Chain Smart Contract Deployment Verification (Stellar Testnet Explorer)
 ![Stellar Explorer Deployment Proof](docs/screenshots/stellar_explorer_proof.png)
 
-#### 7. Analytics Event and Exception Monitoring Dashboard (PostHog & Sentry)
-![SafeGuard Analytics Dashboard](docs/screenshots/analytics_setup.png)
 
