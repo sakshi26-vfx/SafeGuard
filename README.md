@@ -99,9 +99,25 @@ SafeGuard is built to fully satisfy the requirements for **Level 4 of the Stella
 
 ### 3. User Feedback & Analytics Validation
 - **Feedback Survey:** [Share your experience via our Google Form](https://forms.gle/xwb3Nw5mHU9FJH8w7)
-- **Status:** Currently gathering user feedback (1 response received, 9 more pending).
+- **Status:** **11 responses received** (100% completion target met).
 - Detailed user logs and analysis: [docs/feedback_template.md](file:///d:/SafeGuard.stellar/docs/feedback_template.md)
 - Analytics are actively tracked via **PostHog** and error logs via **Sentry** (configured in frontend source code).
+
+#### Google Form Feedback Responses
+
+| Timestamp | Full Name | Stellar Testnet Wallet Address | Passkey Setup UX | Tx Issues / Delays | Beneficiary Setup Clarity Score |
+| :--- | :--- | :--- | :--- | :--- | :---: |
+| 7/8/2026 20:54:21 | Mrunal Ghorpade | `GAGKWDKAZYZ7GSK2K6YZGGEDEZXL2GEHDU2NMOAU4AVHSFAVZH336FFX` | Very smooth (registered instantly) | No, transactions were quick and smooth | 5 / 5 |
+| 7/8/2026 21:00:49 | Ayush jadhav | `GBUDUGMHCM7B54DIB5P5LP4PP6MG7MJ6VUBBYDB53BZNZCTH36LLG5MG` | Very smooth (registered instantly) | No, transactions were quick and smooth | 5 / 5 |
+| 7/9/2026 9:04:16 | Yash Annadate | `GB6B6QEJFY4HAKATRO6MI77WDZ66W4FFPJN6AYLISJEHTLXYFPHQFFTV` | Very smooth (registered instantly) | No, transactions were quick and smooth | 5 / 5 |
+| 7/10/2026 20:31:51 | durvesh dongare | `https://forms.gle/xwb3Nw5mHU9FJH8w7` | Very smooth (registered instantly) | No, transactions were quick and smooth | 5 / 5 |
+| 7/10/2026 20:32:11 | Nitish Singh | `GBPSA7Q2J4G67SE4BIMKA2CJD5CQJPQAAI7URCC53REMHVR7BISJWMCB` | Very smooth (registered instantly) | No, transactions were quick and smooth | 4 / 5 |
+| 7/10/2026 20:36:17 | samidra | `GC5QT7S36Z7SACWT3BBJEDKU2X4VJOON6IKRLXLFBXJC3GB6IWEOXC34` | Very smooth (registered instantly) | No, transactions were quick and smooth | 5 / 5 |
+| 7/10/2026 20:42:45 | Arya Shinde | `GDTH7H7QKFMKJ22VN6ZDNM6AYX54CHT5WS4MA46GJQ7ZPA4QVUSF7Z3Q` | Very smooth (registered instantly) | No, transactions were quick and smooth | 5 / 5 |
+| 7/11/2026 12:02:09 | Tanmay tad | `GBM25BHDCKA4DKEOROPMUVXHUSLODDMHTGQPXCP7N7RDPMRGC5YD7O4D` | Very smooth (registered instantly) | I did not test or run these functions | 5 / 5 |
+| 7/13/2026 21:56:44 | Mishti mali | `GCK7YYGLTRVDOSAYUE4XCQT6ELS43TSLIG6PRPNGWK76EPLQGT3MW7HC` | Very smooth (registered instantly) | No, transactions were quick and smooth | 5 / 5 |
+| 7/13/2026 22:04:10 | Madhav Girme | `GCKY5EBPX6BID2N5M6QQBTNVEQW5SPPLFBNS6QR3ZIO75CTTW6BYGFEA` | Very smooth (registered instantly) | No, transactions were quick and smooth | 5 / 5 |
+| 7/13/2026 22:08:38 | mrunal ghorpade | `GBEFDGOOIM45SY5NIA32OVG26GQ47ERDKUWE3HPJPVE3IAZUXHKLSNNZ` | Very smooth (registered instantly) | No, transactions were quick and smooth | 5 / 5 |
 
 ### 4. Interactive Onboarding
 - A dedicated **How It Works** flow is implemented directly in-app at `/onboarding` to guide new users step-by-step through setting up their digital estate.
