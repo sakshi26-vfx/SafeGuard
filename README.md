@@ -155,4 +155,8 @@ SafeGuard is built to fully satisfy the requirements for **Level 4 of the Stella
 #### 6. On-Chain Smart Contract Deployment Verification (Stellar Testnet Explorer)
 ![Stellar Explorer Deployment Proof](docs/screenshots/stellar_explorer_proof.png)
 
+#### 7. Automated CI/CD Testing & Linting Pipeline (GitHub Actions)
+![SafeGuard CI/CD Pipeline](docs/screenshots/cicd_pipeline.png)
+
+
 
