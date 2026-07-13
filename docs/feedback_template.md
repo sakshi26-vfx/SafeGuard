@@ -25,103 +25,35 @@ Each test participant must execute the following workflow:
 
 ## 3. Aggregated Feedback Scores & Analysis
 
-Based on the feedback collected from the 10 real testnet users who went through the test scenarios, here are the calculated average scores:
+Based on the feedback collected from the 11 real testnet users who responded to the Google Form, here are the calculated scores and metrics:
 
-| Metric | Target | Average Score | Status |
+| Metric | Metric Details / Questions | Results | Status |
 |---|---|---|---|
-| **Passkey Setup Speed** | > 4.5 | **4.7 / 5.0** | ✅ Passed |
-| **Countdown Clarity** | > 4.8 | **4.8 / 5.0** | ✅ Passed |
-| **Heartbeat Submission Latency** | > 4.0 | **3.8 / 5.0** | ⚠️ Sub-target (Testnet congestion) |
-| **Friction & Layout** | > 4.5 | **4.7 / 5.0** | ✅ Passed |
-| **Security Trust** | > 4.2 | **4.6 / 5.0** | ✅ Passed |
+| **Passkey Setup Smoothness** | How smooth was the process of registering your biometric Passkey? | **100% Very smooth** (registered instantly) | ✅ Passed |
+| **Transaction Smoothness** | Did you encounter any issues or transaction delays while calling the initialize or heartbeat functions? | **100% No issues/delays** (for all users who tested) | ✅ Passed |
+| **Setup Clarity & Intuition** | How clear and intuitive did you find the process of designating a beneficiary and setting up asset claiming? | **4.91 / 5.0** (Average rating) | ✅ Passed |
 
 ### Key Findings & Action Taken
-1. **Passkey UX is a Major Win:** Users loved the simplicity of using their native device biometrics (FaceID/TouchID/Windows Hello) instead of managing mnemonic phrases. 
-2. **Stellar Testnet Latency:** The primary friction point was Soroban transaction submission latency on testnet, which took anywhere from 3 to 7 seconds. To mitigate this, we added clear loading state indicators and micro-spinner animations to keep the user informed.
-3. **Countdown Real-time Sync:** Added a live clock tick component in React to ensure the countdown stays exactly synced with the browser local clock and the smart contract's recorded parameters.
+1. **Biometric Passkey UX:** 100% of participants reported an instant, seamless experience when registering their biometric Passkey. Using native credentials (FaceID, TouchID, Windows Hello) completely eliminated the complexity of traditional seed phrases.
+2. **Transaction Performance:** Transactions were confirmed without issue on Stellar Testnet for all participants who called the vault smart functions.
+3. **Onboarding & Design Clarity:** Designated beneficiary setup was highly clear, scoring 4.91 / 5.0, proving that our glassmorphic interface and step-by-step FAQ instructions are highly intuitive.
 
 ---
 
-## 4. Raw User Feedback Logs (10+ Users)
+## 4. Google Form Raw Feedback Logs
 
-Below is the compilation of the feedback sessions:
+Below is the compilation of the raw Google Form response logs:
 
-### User 1
-- **Device/OS**: iPhone 15 / iOS 17 (Safari)
-- **Passkey Setup Speed**: 5/5 (Used FaceID, took less than 2 seconds)
-- **Countdown Clarity**: 5/5 (Very clear, loved the circular countdown indicator)
-- **Heartbeat Latency**: 4/5 (Soroban tx took ~5 seconds, loading spinner kept me informed)
-- **Friction & Layout**: 5/5 (Great dark theme, glassmorphism looks very premium)
-- **General Comments**: "Setting up FaceID for inheritance felt like magic. Much simpler than writing private keys."
-
-### User 2
-- **Device/OS**: MacBook Pro / macOS Sonoma (Chrome)
-- **Passkey Setup Speed**: 5/5 (TouchID)
-- **Countdown Clarity**: 4/5 (Timer is clear, but could add a hover state with the exact date/time)
-- **Heartbeat Latency**: 4/5 (Soroban latency was fine, standard Testnet speeds)
-- **Friction & Layout**: 5/5 (The design looks extremely polished and clean)
-- **General Comments**: "Worked smoothly. The countdown visual is very engaging."
-
-### User 3
-- **Device/OS**: Windows 11 / Edge (Windows Hello Pin)
-- **Passkey Setup Speed**: 4/5 (Took a second to choose PIN vs camera)
-- **Countdown Clarity**: 5/5
-- **Heartbeat Latency**: 3/5 (Stellar Testnet had a temporary delay, but transaction succeeded)
-- **Friction & Layout**: 4.5/5 (Excellent layout)
-- **General Comments**: "Tested the expired claim flow and the beneficiary received the tokens instantly."
-
-### User 4
-- **Device/OS**: Google Pixel 8 / Android 14 (Chrome)
-- **Passkey Setup Speed**: 5/5 (Fingerprint biometric)
-- **Countdown Clarity**: 5/5
-- **Heartbeat Latency**: 4/5
-- **Friction & Layout**: 5/5 (Highly mobile-responsive, looks great on mobile screen)
-- **General Comments**: "No issues found. WebAuthn was quick."
-
-### User 5
-- **Device/OS**: iPad Air / iPadOS (Safari)
-- **Passkey Setup Speed**: 5/5
-- **Countdown Clarity**: 5/5
-- **Heartbeat Latency**: 4/5
-- **Friction & Layout**: 5/5
-- **General Comments**: "Loved the layout, especially the clean animations when heartbeats succeed."
-
-### User 6
-- **Device/OS**: Ubuntu Linux / Chrome (Yubikey Hardware)
-- **Passkey Setup Speed**: 4/5 (Required plugging in Yubikey and tapping button)
-- **Countdown Clarity**: 4/5
-- **Heartbeat Latency**: 4/5
-- **Friction & Layout**: 4/5
-- **General Comments**: "Hardware token authentication worked perfectly. Excellent smart contract checks."
-
-### User 7
-- **Device/OS**: iPhone 14 Pro / iOS (Chrome mobile)
-- **Passkey Setup Speed**: 5/5
-- **Countdown Clarity**: 5/5
-- **Heartbeat Latency**: 4/5
-- **Friction & Layout**: 5/5
-- **General Comments**: "The countdown visual was awesome. The FaceID authentication flow is incredibly smooth."
-
-### User 8
-- **Device/OS**: MacBook Air / Safari (TouchID)
-- **Passkey Setup Speed**: 5/5
-- **Countdown Clarity**: 5/5
-- **Heartbeat Latency**: 4/5
-- **Friction & Layout**: 5/5
-- **General Comments**: "Really good UX. No confusion at all during setup."
-
-### User 9
-- **Device/OS**: Windows 11 / Firefox (Windows Hello Fingerprint)
-- **Passkey Setup Speed**: 4/5
-- **Countdown Clarity**: 5/5
-- **Heartbeat Latency**: 3/5 (Stellar testnet was slightly slow but worked fine)
-- **Friction & Layout**: 4.5/5
-- **General Comments**: "Strong security model. Very clean codebase."
-
-### User 10
-- **Device/OS**: Samsung Galaxy S23 / Android (Firefox)
-- **Passkey Setup Speed**: 5/5
-- **Countdown Clarity**: 5/5
-- **Heartbeat Latency**: 4/5
-- **Friction & Layout**: 5/5
-- **General Comments**: "Best implementation of decentralized inheritance I've seen. Biometric support makes it usable for non-crypto natives."
+| Timestamp | Full Name | Stellar Testnet Wallet Address | Passkey Setup UX | Tx Issues / Delays | Beneficiary Setup Clarity Score |
+| :--- | :--- | :--- | :--- | :--- | :---: |
+| 7/8/2026 20:54:21 | Mrunal Ghorpade | `GAGKWDKAZYZ7GSK2K6YZGGEDEZXL2GEHDU2NMOAU4AVHSFAVZH336FFX` | Very smooth (registered instantly) | No, transactions were quick and smooth | 5 / 5 |
+| 7/8/2026 21:00:49 | Ayush jadhav | `GBUDUGMHCM7B54DIB5P5LP4PP6MG7MJ6VUBBYDB53BZNZCTH36LLG5MG` | Very smooth (registered instantly) | No, transactions were quick and smooth | 5 / 5 |
+| 7/9/2026 9:04:16 | Yash Annadate | `GB6B6QEJFY4HAKATRO6MI77WDZ66W4FFPJN6AYLISJEHTLXYFPHQFFTV` | Very smooth (registered instantly) | No, transactions were quick and smooth | 5 / 5 |
+| 7/10/2026 20:31:51 | durvesh dongare | `https://forms.gle/xwb3Nw5mHU9FJH8w7` | Very smooth (registered instantly) | No, transactions were quick and smooth | 5 / 5 |
+| 7/10/2026 20:32:11 | Nitish Singh | `GBPSA7Q2J4G67SE4BIMKA2CJD5CQJPQAAI7URCC53REMHVR7BISJWMCB` | Very smooth (registered instantly) | No, transactions were quick and smooth | 4 / 5 |
+| 7/10/2026 20:36:17 | samidra | `GC5QT7S36Z7SACWT3BBJEDKU2X4VJOON6IKRLXLFBXJC3GB6IWEOXC34` | Very smooth (registered instantly) | No, transactions were quick and smooth | 5 / 5 |
+| 7/10/2026 20:42:45 | Arya Shinde | `GDTH7H7QKFMKJ22VN6ZDNM6AYX54CHT5WS4MA46GJQ7ZPA4QVUSF7Z3Q` | Very smooth (registered instantly) | No, transactions were quick and smooth | 5 / 5 |
+| 7/11/2026 12:02:09 | Tanmay tad | `GBM25BHDCKA4DKEOROPMUVXHUSLODDMHTGQPXCP7N7RDPMRGC5YD7O4D` | Very smooth (registered instantly) | I did not test or run these functions | 5 / 5 |
+| 7/13/2026 21:56:44 | Mishti mali | `GCK7YYGLTRVDOSAYUE4XCQT6ELS43TSLIG6PRPNGWK76EPLQGT3MW7HC` | Very smooth (registered instantly) | No, transactions were quick and smooth | 5 / 5 |
+| 7/13/2026 22:04:10 | Madhav Girme | `GCKY5EBPX6BID2N5M6QQBTNVEQW5SPPLFBNS6QR3ZIO75CTTW6BYGFEA` | Very smooth (registered instantly) | No, transactions were quick and smooth | 5 / 5 |
+| 7/13/2026 22:08:38 | mrunal ghorpade | `GBEFDGOOIM45SY5NIA32OVG26GQ47ERDKUWE3HPJPVE3IAZUXHKLSNNZ` | Very smooth (registered instantly) | No, transactions were quick and smooth | 5 / 5 |
