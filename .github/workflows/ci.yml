@@ -40,9 +40,7 @@ jobs:
         working-directory: .
 
       - name: Build contract WASM (release)
-        run: |
-          cargo install stellar-cli --locked || true
-          stellar contract build
+        run: cargo build --target wasm32-unknown-unknown --release
         working-directory: .
 
   # ─── Frontend Type-check & Lint ────────────────────────────────────────────
