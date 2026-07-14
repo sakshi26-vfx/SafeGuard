@@ -103,3 +103,56 @@ jobs:
 
       - name: Build Next.js application
         run: npm run build
+
+  # ─── Continuous Deployment (CD) ────────────────────────────────────────────
+  deploy:
+    name: Deploy to Testnet & Vercel
+    runs-on: ubuntu-latest
+    needs: [contract-test, frontend-build]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Build Contract WASM
+      - name: Install Rust stable toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Build contract WASM (release)
+        run: cargo build --target wasm32-unknown-unknown --release
+
+      # Smart Contract Deployment
+      - name: Download Stellar CLI
+        run: |
+          curl -LSS https://github.com/stellar/stellar-cli/releases/download/v21.0.1/stellar-cli-v21.0.1-x86_64-unknown-linux-gnu.tar.gz | tar -xz
+          mv stellar-cli-v21.0.1-x86_64-unknown-linux-gnu/stellar ./stellar
+          chmod +x ./stellar
+
+      - name: Deploy Smart Contract to Stellar Testnet
+        run: |
+          ./stellar network add --rpc-url "https://soroban-testnet.stellar.org:443" --network-passphrase "Test Stellar Network ; Billions" testnet
+          ./stellar keys import --secret-key "${{ secrets.STELLAR_DEPLOYER_SECRET_KEY }}" deployer
+          ./stellar contract deploy \
+            --wasm target/wasm32-unknown-unknown/release/safeguard.wasm \
+            --source deployer \
+            --network testnet
+
+      # Frontend Deployment
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        working-directory: frontend
+
+      - name: Build Project Artifacts
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        working-directory: frontend
+
+      - name: Deploy Project Artifacts to Vercel
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+        working-directory: frontend
+
