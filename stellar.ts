@@ -1,15 +1,13 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Account,
+  Address,
+  Contract,
   Networks,
   Operation,
   rpc,
   TransactionBuilder,
   xdr,
-  Address,
-  Contract,
 } from '@stellar/stellar-sdk';
-import { hexToBytes } from './webauthn';
 
 const RPC_URL = process.env.NEXT_PUBLIC_STELLAR_RPC || 'https://soroban-testnet.stellar.org:443';
 const NETWORK_PASSPHRASE = process.env.NEXT_PUBLIC_STELLAR_NETWORK === 'public'
@@ -38,17 +36,14 @@ function parseScVal(val: xdr.ScVal): any {
 }
 
 // Helper: Read-only contract calls (via simulation)
-async function simulateCall(
+export async function simulateCall(
   contractId: string,
   functionName: string,
   args: xdr.ScVal[] = []
 ): Promise<any> {
-  // Construct a dummy Account locally for simulation — no network call needed.
-  // This avoids StrKey validation errors and eliminates an unnecessary RPC round-trip.
+  const contract = new Contract(contractId);
   const dummySource = 'GAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWHF';
   const account = new Account(dummySource, '0');
-
-  const contract = new Contract(contractId);
 
   const tx = new TransactionBuilder(account, {
     fee: '100',
@@ -75,29 +70,6 @@ async function simulateCall(
   return null;
 }
 
-// Read-only getters
-export async function getHeartbeatWindow(contractId: string): Promise<bigint> {
-  const result = await simulateCall(contractId, 'get_heartbeat_window');
-  return typeof result === 'bigint' ? result : BigInt(result || 0);
-}
-
-export async function getLastHeartbeat(contractId: string): Promise<bigint> {
-  const result = await simulateCall(contractId, 'get_last_heartbeat');
-  return typeof result === 'bigint' ? result : BigInt(result || 0);
-}
-
-export async function getBeneficiary(contractId: string): Promise<string> {
-  return await simulateCall(contractId, 'get_beneficiary');
-}
-
-export async function getOwner(contractId: string): Promise<string> {
-  return await simulateCall(contractId, 'get_owner');
-}
-
-export async function isClaimed(contractId: string): Promise<boolean> {
-  return await simulateCall(contractId, 'is_claimed');
-}
-
 // Transaction Helpers: Invoking state-changing functions
 export async function buildInvokeTransaction(
   sourcePublicKey: string,
@@ -109,7 +81,7 @@ export async function buildInvokeTransaction(
   const contract = new Contract(contractId);
 
   const tx = new TransactionBuilder(account, {
-    fee: '100000', // Baseline fee, will be updated by simulation
+    fee: '100000',
     networkPassphrase: NETWORK_PASSPHRASE,
   })
     .addOperation(
@@ -122,56 +94,29 @@ export async function buildInvokeTransaction(
     .setTimeout(60)
     .build();
 
-  // Simulate to calculate fees and resource footprints
   const sim = await rpcServer.simulateTransaction(tx);
   if (!rpc.Api.isSimulationSuccess(sim)) {
     throw new Error(`Transaction simulation failed: ${JSON.stringify(sim)}`);
   }
 
-  // Assemble transaction with simulation resources
   return rpc.assembleTransaction(tx, sim).build();
 }
 
-// Poll transaction results
-export async function pollTransactionStatus(txHash: string): Promise<rpc.Api.GetTransactionResponse> {
-  let attempts = 0;
-  while (attempts < 20) {
-    const status = await rpcServer.getTransaction(txHash);
-    if (status.status === rpc.Api.GetTransactionStatus.SUCCESS) {
-      return status;
-    } else if (status.status === rpc.Api.GetTransactionStatus.FAILED) {
-      throw new Error(`Transaction failed: ${JSON.stringify(status.resultXdr)}`);
-    }
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    attempts++;
-  }
-  throw new Error('Transaction polling timed out.');
-}
+// --- Contract Wrapper Functions matching the contract methods ---
 
-// Submit Contract Initialization (first-time setup)
-export async function submitInitialize(
+export async function initialize(
   contractId: string,
   ownerPublicKey: string,
-  publicKeyHex: string,
+  passkeyBytes: Uint8Array,
   beneficiaryPublicKey: string,
   windowSeconds: bigint,
   tokenAddress: string,
   signTxWithWallet: (tx: string, networkPassphrase?: string) => Promise<string>
 ): Promise<string> {
-  // owner Address ScVal
   const ownerAddr = Address.fromString(ownerPublicKey).toScVal();
-
-  // passkey_bytes: 65-byte uncompressed public key as scvBytes
-  const pkBytes = hexToBytes(publicKeyHex);
-  const passkeyScVal = xdr.ScVal.scvBytes(pkBytes as any);
-
-  // beneficiary Address ScVal
+  const passkeyScVal = xdr.ScVal.scvBytes(passkeyBytes as any);
   const beneficiaryAddr = Address.fromString(beneficiaryPublicKey).toScVal();
-
-  // window u64 ScVal
   const windowScVal = xdr.ScVal.scvU64(new xdr.Uint64(windowSeconds));
-
-  // token Address ScVal
   const tokenAddr = Address.fromString(tokenAddress).toScVal();
 
   const args = [ownerAddr, passkeyScVal, beneficiaryAddr, windowScVal, tokenAddr];
@@ -184,28 +129,24 @@ export async function submitInitialize(
   if (submission.status === 'ERROR') {
     throw new Error(`Submission failed: ${JSON.stringify(submission.errorResult)}`);
   }
-
-  const receipt = await pollTransactionStatus(submission.hash);
-  return receipt.txHash;
+  return submission.hash;
 }
 
-// Update the stored passkey public key (owner-only). Use this to re-link a new
-// browser passkey after the contract is already initialized.
-export async function submitUpdatePasskey(
+export async function heartbeat(
   contractId: string,
   ownerPublicKey: string,
-  newPublicKeyHex: string,
+  signatureBytes: Uint8Array,
+  clientDataJsonBytes: Uint8Array,
+  authenticatorDataBytes: Uint8Array,
   signTxWithWallet: (tx: string, networkPassphrase?: string) => Promise<string>
 ): Promise<string> {
-  const pkBytes = hexToBytes(newPublicKeyHex);
-  const passkeyScVal = xdr.ScVal.scvBytes(pkBytes as any);
+  const args = [
+    xdr.ScVal.scvBytes(signatureBytes as any),
+    xdr.ScVal.scvBytes(clientDataJsonBytes as any),
+    xdr.ScVal.scvBytes(authenticatorDataBytes as any),
+  ];
 
-  const assembledTx = await buildInvokeTransaction(
-    ownerPublicKey,
-    contractId,
-    'update_passkey',
-    [passkeyScVal]
-  );
+  const assembledTx = await buildInvokeTransaction(ownerPublicKey, contractId, 'heartbeat', args);
   const signedTxXdr = await signTxWithWallet(assembledTx.toXDR(), NETWORK_PASSPHRASE);
   const submission = await rpcServer.sendTransaction(
     TransactionBuilder.fromXDR(signedTxXdr, NETWORK_PASSPHRASE)
@@ -214,79 +155,86 @@ export async function submitUpdatePasskey(
   if (submission.status === 'ERROR') {
     throw new Error(`Submission failed: ${JSON.stringify(submission.errorResult)}`);
   }
-
-  const receipt = await pollTransactionStatus(submission.hash);
-  return receipt.txHash;
+  return submission.hash;
 }
 
-// Submit Owner Heartbeat Check-in
-export async function submitHeartbeat(
+export async function update_passkey(
   contractId: string,
   ownerPublicKey: string,
-  signatureHex: string,
-  clientDataJsonHex: string,
-  authenticatorDataHex: string,
-  signTxWithWallet: (tx: string, networkPassphrase?: string) => Promise<string> // Wallet signing integration (e.g. Freighter)
+  newPasskeyBytes: Uint8Array,
+  signTxWithWallet: (tx: string, networkPassphrase?: string) => Promise<string>
 ): Promise<string> {
-  const args = [
-    xdr.ScVal.scvBytes(hexToBytes(signatureHex) as any),
-    xdr.ScVal.scvBytes(hexToBytes(clientDataJsonHex) as any),
-    xdr.ScVal.scvBytes(hexToBytes(authenticatorDataHex) as any),
-  ];
+  const passkeyScVal = xdr.ScVal.scvBytes(newPasskeyBytes as any);
 
-  const assembledTx = await buildInvokeTransaction(ownerPublicKey, contractId, 'heartbeat', args);
-  
-  // Sign and submit transaction
+  const assembledTx = await buildInvokeTransaction(ownerPublicKey, contractId, 'update_passkey', [passkeyScVal]);
   const signedTxXdr = await signTxWithWallet(assembledTx.toXDR(), NETWORK_PASSPHRASE);
-  const submission = await rpcServer.sendTransaction(TransactionBuilder.fromXDR(signedTxXdr, NETWORK_PASSPHRASE));
+  const submission = await rpcServer.sendTransaction(
+    TransactionBuilder.fromXDR(signedTxXdr, NETWORK_PASSPHRASE)
+  );
 
   if (submission.status === 'ERROR') {
     throw new Error(`Submission failed: ${JSON.stringify(submission.errorResult)}`);
   }
-
-  const receipt = await pollTransactionStatus(submission.hash);
-  return receipt.txHash;
+  return submission.hash;
 }
 
-// Submit Deposit of Escrow Assets
-export async function submitDeposit(
+export async function deposit(
   contractId: string,
   ownerPublicKey: string,
   amount: bigint,
   signTxWithWallet: (tx: string, networkPassphrase?: string) => Promise<string>
 ): Promise<string> {
-  // Convert amount to i128 ScVal representation
-  // We represent i128 using high and low parts (each 64-bit)
   const hi = new xdr.Int64(amount >> 64n);
   const lo = new xdr.Uint64(amount & 0xffffffffffffffffn);
   const scvAmount = xdr.ScVal.scvI128(new xdr.Int128Parts({ hi, lo }));
 
   const assembledTx = await buildInvokeTransaction(ownerPublicKey, contractId, 'deposit', [scvAmount]);
   const signedTxXdr = await signTxWithWallet(assembledTx.toXDR(), NETWORK_PASSPHRASE);
-  const submission = await rpcServer.sendTransaction(TransactionBuilder.fromXDR(signedTxXdr, NETWORK_PASSPHRASE));
+  const submission = await rpcServer.sendTransaction(
+    TransactionBuilder.fromXDR(signedTxXdr, NETWORK_PASSPHRASE)
+  );
 
   if (submission.status === 'ERROR') {
     throw new Error(`Submission failed: ${JSON.stringify(submission.errorResult)}`);
   }
-
-  const receipt = await pollTransactionStatus(submission.hash);
-  return receipt.txHash;
+  return submission.hash;
 }
 
-// Submit Beneficiary Inheritance Claim
-export async function submitClaim(
+export async function claim_assets(
   contractId: string,
   beneficiaryPublicKey: string,
   signTxWithWallet: (tx: string, networkPassphrase?: string) => Promise<string>
 ): Promise<string> {
   const assembledTx = await buildInvokeTransaction(beneficiaryPublicKey, contractId, 'claim_assets', []);
   const signedTxXdr = await signTxWithWallet(assembledTx.toXDR(), NETWORK_PASSPHRASE);
-  const submission = await rpcServer.sendTransaction(TransactionBuilder.fromXDR(signedTxXdr, NETWORK_PASSPHRASE));
+  const submission = await rpcServer.sendTransaction(
+    TransactionBuilder.fromXDR(signedTxXdr, NETWORK_PASSPHRASE)
+  );
 
   if (submission.status === 'ERROR') {
     throw new Error(`Submission failed: ${JSON.stringify(submission.errorResult)}`);
   }
+  return submission.hash;
+}
 
-  const receipt = await pollTransactionStatus(submission.hash);
-  return receipt.txHash;
+export async function get_last_heartbeat(contractId: string): Promise<bigint> {
+  const result = await simulateCall(contractId, 'get_last_heartbeat');
+  return typeof result === 'bigint' ? result : BigInt(result || 0);
+}
+
+export async function get_heartbeat_window(contractId: string): Promise<bigint> {
+  const result = await simulateCall(contractId, 'get_heartbeat_window');
+  return typeof result === 'bigint' ? result : BigInt(result || 0);
+}
+
+export async function get_beneficiary(contractId: string): Promise<string> {
+  return await simulateCall(contractId, 'get_beneficiary');
+}
+
+export async function get_owner(contractId: string): Promise<string> {
+  return await simulateCall(contractId, 'get_owner');
+}
+
+export async function is_claimed(contractId: string): Promise<boolean> {
+  return await simulateCall(contractId, 'is_claimed');
 }
