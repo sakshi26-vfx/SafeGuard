@@ -131,6 +131,7 @@ jobs:
           echo "$HOME/.stellar/bin" >> $GITHUB_PATH
 
       - name: Deploy Smart Contract to Stellar Testnet
+        if: ${{ secrets.STELLAR_DEPLOYER_SECRET_KEY != '' }}
         env:
           STELLAR_DEPLOYER_SECRET_KEY: ${{ secrets.STELLAR_DEPLOYER_SECRET_KEY }}
         run: |
@@ -144,19 +145,32 @@ jobs:
             --source deployer \
             --network testnet
 
+      - name: Skip contract deploy (no secret configured)
+        if: ${{ secrets.STELLAR_DEPLOYER_SECRET_KEY == '' }}
+        run: echo "⚠️ STELLAR_DEPLOYER_SECRET_KEY not set — skipping on-chain deployment."
+
       # Frontend Deployment
       - name: Install Vercel CLI
+        if: ${{ secrets.VERCEL_TOKEN != '' }}
         run: npm install --global vercel@latest
 
       - name: Pull Vercel Environment Information
+        if: ${{ secrets.VERCEL_TOKEN != '' }}
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
         working-directory: frontend
 
       - name: Build Project Artifacts
+        if: ${{ secrets.VERCEL_TOKEN != '' }}
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
         working-directory: frontend
 
       - name: Deploy Project Artifacts to Vercel
+        if: ${{ secrets.VERCEL_TOKEN != '' }}
         run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
         working-directory: frontend
+
+      - name: Skip Vercel deploy (no token configured)
+        if: ${{ secrets.VERCEL_TOKEN == '' }}
+        run: echo "⚠️ VERCEL_TOKEN not set — skipping Vercel deployment."
+
 
