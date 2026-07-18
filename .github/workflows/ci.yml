@@ -133,7 +133,7 @@ jobs:
 
       - name: Deploy Smart Contract to Stellar Testnet
         run: |
-          ./stellar network add --rpc-url "https://soroban-testnet.stellar.org:443" --network-passphrase "Test Stellar Network ; Billions" testnet
+          ./stellar network add --rpc-url "https://soroban-testnet.stellar.org:443" --network-passphrase "Test SDF Network ; September 2015" testnet
           ./stellar keys import --secret-key "${{ secrets.STELLAR_DEPLOYER_SECRET_KEY }}" deployer
           ./stellar contract deploy \
             --wasm target/wasm32-unknown-unknown/release/safeguard.wasm \

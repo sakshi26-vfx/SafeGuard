@@ -55,7 +55,7 @@ The optimized WASM will be generated at `cargo-target/wasm32-unknown-unknown/rel
 Add the Stellar Testnet network to your Stellar CLI configurations:
 
 ```bash
-stellar network add --rpc-url "https://soroban-testnet.stellar.org:443" --network-passphrase "Test Stellar Network ; Billions" testnet
+stellar network add --rpc-url "https://soroban-testnet.stellar.org:443" --network-passphrase "Test SDF Network ; September 2015" testnet
 ```
 
 ### Step B: Create deployment keys
