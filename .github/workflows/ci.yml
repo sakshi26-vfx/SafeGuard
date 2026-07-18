@@ -134,7 +134,10 @@ jobs:
       - name: Deploy Smart Contract to Stellar Testnet
         run: |
           ./stellar network add --rpc-url "https://soroban-testnet.stellar.org:443" --network-passphrase "Test SDF Network ; September 2015" testnet
-          ./stellar keys import --secret-key "${{ secrets.STELLAR_DEPLOYER_SECRET_KEY }}" deployer
+          mkdir -p ~/.config/soroban/identity
+          echo 'secret_key = "${{ secrets.STELLAR_DEPLOYER_SECRET_KEY }}"' > ~/.config/soroban/identity/deployer.toml
+          mkdir -p ~/.config/stellar/identity
+          echo 'secret_key = "${{ secrets.STELLAR_DEPLOYER_SECRET_KEY }}"' > ~/.config/stellar/identity/deployer.toml
           ./stellar contract deploy \
             --wasm target/wasm32-unknown-unknown/release/safeguard.wasm \
             --source deployer \
