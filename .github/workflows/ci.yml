@@ -125,20 +125,21 @@ jobs:
         run: cargo build --target wasm32-unknown-unknown --release
 
       # Smart Contract Deployment
-      - name: Download Stellar CLI
+      - name: Install Stellar CLI
         run: |
-          curl -LSS https://github.com/stellar/stellar-cli/releases/download/v21.0.1/stellar-cli-v21.0.1-x86_64-unknown-linux-gnu.tar.gz | tar -xz
-          mv stellar-cli-v21.0.1-x86_64-unknown-linux-gnu/stellar ./stellar
-          chmod +x ./stellar
+          curl -fsSL https://github.com/stellar/stellar-cli/raw/main/install.sh | sh
+          echo "$HOME/.stellar/bin" >> $GITHUB_PATH
 
       - name: Deploy Smart Contract to Stellar Testnet
+        env:
+          STELLAR_DEPLOYER_SECRET_KEY: ${{ secrets.STELLAR_DEPLOYER_SECRET_KEY }}
         run: |
-          ./stellar network add --rpc-url "https://soroban-testnet.stellar.org:443" --network-passphrase "Test SDF Network ; September 2015" testnet
+          stellar network add --rpc-url "https://soroban-testnet.stellar.org:443" --network-passphrase "Test SDF Network ; September 2015" testnet
           mkdir -p ~/.config/soroban/identity
-          echo 'secret_key = "${{ secrets.STELLAR_DEPLOYER_SECRET_KEY }}"' > ~/.config/soroban/identity/deployer.toml
+          echo "secret_key = \"$STELLAR_DEPLOYER_SECRET_KEY\"" > ~/.config/soroban/identity/deployer.toml
           mkdir -p ~/.config/stellar/identity
-          echo 'secret_key = "${{ secrets.STELLAR_DEPLOYER_SECRET_KEY }}"' > ~/.config/stellar/identity/deployer.toml
-          ./stellar contract deploy \
+          echo "secret_key = \"$STELLAR_DEPLOYER_SECRET_KEY\"" > ~/.config/stellar/identity/deployer.toml
+          stellar contract deploy \
             --wasm target/wasm32-unknown-unknown/release/safeguard.wasm \
             --source deployer \
             --network testnet
