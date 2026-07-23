@@ -1,5 +1,7 @@
 # SafeGuard: Decentralized Asset Inheritance Protocol
 
+[![SafeGuard CI/CD](https://github.com/sakshi26-vfx/SafeGuard/actions/workflows/ci.yml/badge.svg)](https://github.com/sakshi26-vfx/SafeGuard/actions)
+
 SafeGuard is a production-grade, decentralized digital asset inheritance protocol built on the Stellar Testnet for the Level 4 Stellar Builder Challenge. By combining the cryptographic security of **WebAuthn (Passkeys)** with the automation of **Soroban Smart Contracts**, SafeGuard provides a reliable, self-custodial solution for digital estate planning.
 
 ---
@@ -69,10 +71,10 @@ The frontend is a Next.js application built with Tailwind CSS, TypeScript, and t
 **Configure Environment Variables:**
 Create `frontend/.env.local` with the following variables:
 ```env
-NEXT_PUBLIC_CONTRACT_ID=CCKPFO5MBCJO5EKQQFMLUGXQ4ZG5LJLBX3IYXVZ6LNMSZWMOQRWNHISH
+NEXT_PUBLIC_CONTRACT_ID=CCNSAHYFVGUQD3XDJ6UGWNFNVDFGPAWGA2B3LNQNGXXOKVA6VSC5D3HX
 NEXT_PUBLIC_STELLAR_NETWORK=testnet
 NEXT_PUBLIC_STELLAR_RPC=https://soroban-testnet.stellar.org:443
-NEXT_PUBLIC_BENEFICIARY=GDD6AIIFDFH2AOQUR626PUIZY4UJDRZRCF7G6HYXWFSXKBLPTVWOSRB6
+NEXT_PUBLIC_BENEFICIARY=GDP6GDHSV3KH7KC5WB2PKZZACCO6UE5QTEEDRC73LKZ5FISAPJFJMKBX
 NEXT_PUBLIC_TOKEN_ADDRESS=CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC
 ```
 
@@ -89,12 +91,12 @@ powershell -ExecutionPolicy Bypass -File .\scripts\dev-setup.ps1
 SafeGuard is built to fully satisfy the requirements for **Level 4 of the Stellar Builder Challenge**:
 
 ### 1. Smart Contract Deployment
-- **Contract ID:** `CCKPFO5MBCJO5EKQQFMLUGXQ4ZG5LJLBX3IYXVZ6LNMSZWMOQRWNHISH`
+- **Contract ID:** `CCNSAHYFVGUQD3XDJ6UGWNFNVDFGPAWGA2B3LNQNGXXOKVA6VSC5D3HX`
 - **Network:** Stellar Testnet
-- **Explorer Link:** [Stellar Expert Contract Explorer](https://stellar.expert/explorer/testnet/contract/CCKPFO5MBCJO5EKQQFMLUGXQ4ZG5LJLBX3IYXVZ6LNMSZWMOQRWNHISH)
+- **Explorer Link:** [Stellar Expert Contract Explorer](https://stellar.expert/explorer/testnet/contract/CCNSAHYFVGUQD3XDJ6UGWNFNVDFGPAWGA2B3LNQNGXXOKVA6VSC5D3HX)
 
 ### 2. Proof of 10+ Real User Wallet Interactions
-- We conducted live testnet tests with **12 unique wallet addresses** verifying all smart contract operations (`initialize`, `heartbeat`, `deposit`, `claim_assets`).
+- We conducted live testnet tests with **15 unique wallet addresses** verifying all smart contract operations (`initialize`, `heartbeat`, `deposit`, `claim_assets`).
 - Detailed tx hashes and logs: [docs/wallet_interactions.md](file:///d:/SafeGuard.stellar/docs/wallet_interactions.md)
 
 ### 3. User Feedback & Analytics Validation
